@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>你最像田曦薇演过的角色里的谁</title>
+<style>
+:root{
+  --ink:#f4ecd9; --ink-dim:#c9bda2; --gold:#d4af6a; --gold-bright:#f0d79a;
+  --bg:#0a0908; --panel:#161310; --panel2:#1f1a15; --line:rgba(212,175,106,.28);
+  --accent:#c8472f; --serif:"Songti SC","STSong","SimSun","宋体","Noto Serif SC","Source Han Serif SC",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--serif); color:var(--ink); background:#050403;
+  -webkit-font-smoothing:antialiased; line-height:1.75; overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:rgba(212,175,106,.35)}
+
+/* ============ 放映厅背景 ============ */
+.cinema{position:fixed;inset:0;z-index:0;overflow:hidden;
+  background:
+   radial-gradient(120% 90% at 50% -10%, rgba(120,86,40,.28), transparent 55%),
+   radial-gradient(80% 60% at 50% 120%, rgba(90,20,15,.18), transparent 60%),
+   linear-gradient(180deg,#0b0908 0%,#080706 45%,#050403 100%);
+}
+/* 顶部光束 */
+.beam{position:absolute;top:-18%;width:46%;height:130%;
+  background:linear-gradient(180deg,rgba(240,215,154,.10),transparent 70%);
+  filter:blur(26px);transform-origin:top center;pointer-events:none;
+  animation:sway 9s ease-in-out infinite alternate;}
+.beam.l{left:6%;transform:rotate(10deg)}
+.beam.r{right:6%;transform:rotate(-10deg);animation-delay:-4s}
+@keyframes sway{from{opacity:.55}to{opacity:1}}
+/* 飘浮尘埃 */
+.dust{position:absolute;border-radius:50%;background:var(--gold-bright);opacity:0;
+  animation:floatUp linear infinite;pointer-events:none}
+@keyframes floatUp{
+  0%{transform:translateY(20vh) scale(.6);opacity:0}
+  12%{opacity:.5}
+  88%{opacity:.4}
+  100%{transform:translateY(-110vh) scale(1);opacity:0}}
+/* 胶片齿孔边 */
+.filmstrip{position:fixed;top:0;bottom:0;width:15px;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(180deg,#0d0b09 0 16px,#050403 16px 32px);opacity:.55}
+.filmstrip .holes{position:absolute;inset:0;
+  background:
+   radial-gradient(circle at 50% 8px,#2b251d 0 4px,transparent 4.5px) 0 0/100% 32px repeat-y;}
+.filmstrip.left{left:0;border-right:1px solid var(--line)}
+.filmstrip.right{right:0;border-left:1px solid var(--line)}
+@media(max-width:680px){.filmstrip{width:9px}}
+
+main{position:relative;z-index:10;min-height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:56px 34px 70px}
+@media(max-width:680px){main{padding:40px 20px 54px}}
+
+.screen{display:none;width:100%;max-width:860px;animation:fade .7s ease both}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ============ 开场 ============ */
+#intro{min-height:78vh;justify-content:center;text-align:center}
+.curtain-hint{font-size:13px;letter-spacing:.5em;color:var(--gold);margin-bottom:26px;opacity:.85}
+.projector{width:64px;height:64px;margin:0 auto 22px;opacity:.9;animation:flick 3.4s infinite}
+@keyframes flick{0%,100%{opacity:.9}45%{opacity:.55}55%{opacity:1}70%{opacity:.6}}
+.title-board{position:relative;display:inline-block;padding:34px 46px;margin:6px 0 8px;
+  border:2px solid var(--gold);border-radius:6px;
+  background:linear-gradient(180deg,rgba(30,24,17,.92),rgba(16,13,10,.92));
+  box-shadow:0 0 0 6px rgba(0,0,0,.45),0 0 44px rgba(212,175,106,.18),inset 0 0 30px rgba(0,0,0,.6)}
+.title-board::before,.title-board::after{content:"✦";position:absolute;top:50%;transform:translateY(-50%);
+  color:var(--gold);font-size:14px}
+.title-board::before{left:14px}.title-board::after{right:14px}
+.title-board h1{font-size:clamp(24px,4.4vw,40px);font-weight:700;letter-spacing:.08em;
+  color:var(--gold-bright);line-height:1.5;text-shadow:0 2px 14px rgba(212,175,106,.35)}
+.starring{margin-top:18px;font-size:15px;letter-spacing:.4em;color:var(--ink-dim)}
+.starring b{color:var(--gold);font-weight:400;letter-spacing:.25em}
+.intro-sub{margin-top:20px;color:var(--ink-dim);font-size:14.5px;letter-spacing:.12em}
+
+.btn{display:inline-flex;align-items:center;gap:10px;margin-top:34px;padding:14px 42px;
+  font-family:var(--serif);font-size:17px;letter-spacing:.32em;color:#1a1206;text-indent:.32em;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));border-radius:3px;
+  box-shadow:0 8px 26px rgba(200,150,70,.28);transition:.25s;font-weight:700}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(200,150,70,.42)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--line);box-shadow:none;text-indent:.32em}
+.btn.ghost:hover{background:rgba(212,175,106,.08)}
+.btn.small{padding:9px 20px;font-size:14px;letter-spacing:.2em;text-indent:.2em;margin:0}
+
+/* 场记板 */
+.clap{width:118px;margin:10px auto 0;animation:clap 1.1s ease .25s both}
+@keyframes clap{0%{transform:rotate(-16deg) translateY(-8px);opacity:0}55%{transform:rotate(0) translateY(0);opacity:1}100%{transform:rotate(0)}}
+.intro-foot{margin-top:40px;font-size:12px;color:#7d7361;letter-spacing:.14em;line-height:2}
+
+/* ============ 答题 ============ */
+#quiz{max-width:780px}
+.chapter-card{text-align:center;margin-bottom:26px}
+.chapter-card .reel{font-size:22px;margin-bottom:8px}
+.chapter-card .ch-no{font-size:13px;letter-spacing:.4em;color:var(--gold)}
+.chapter-card .ch-name{font-size:clamp(20px,3.4vw,27px);color:var(--gold-bright);letter-spacing:.16em;margin-top:4px}
+
+.progress-wrap{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.rail{flex:1;height:14px;border:1px solid var(--line);border-radius:2px;background:#0c0a08;position:relative;overflow:hidden}
+.rail .fill{position:absolute;inset:0;width:0;background:
+   repeating-linear-gradient(90deg,rgba(212,175,106,.85) 0 10px,rgba(212,175,106,.5) 10px 14px);
+   transition:width .5s cubic-bezier(.6,.1,.2,1)}
+.scene-no{font-size:12.5px;color:var(--gold);letter-spacing:.15em;white-space:nowrap}
+
+.q-card{border:1px solid var(--line);border-radius:6px;
+  background:linear-gradient(180deg,rgba(31,26,21,.9),rgba(20,17,14,.92));
+  box-shadow:0 18px 50px rgba(0,0,0,.5),inset 0 0 60px rgba(0,0,0,.35);padding:32px 30px}
+@media(max-width:680px){.q-card{padding:24px 18px}}
+.q-egg{font-size:24px;text-align:center;margin-bottom:14px;filter:drop-shadow(0 0 10px rgba(212,175,106,.3))}
+.scene-txt{color:var(--ink-dim);font-size:15px;text-align:center;max-width:620px;margin:0 auto 6px;font-style:italic}
+.q-txt{font-size:clamp(19px,2.6vw,23px);color:var(--gold-bright);text-align:center;
+  letter-spacing:.05em;margin:10px 0 26px;font-weight:700}
+.opts{display:grid;gap:13px}
+.opt{position:relative;display:flex;gap:14px;align-items:flex-start;text-align:left;
+  padding:16px 20px;border:1px solid rgba(212,175,106,.22);border-radius:4px;
+  background:rgba(12,10,8,.55);transition:.2s;color:var(--ink)}
+.opt:hover{border-color:var(--gold);background:rgba(212,175,106,.08);transform:translateX(4px)}
+.opt.picked{border-color:var(--gold);background:rgba(200,71,47,.14);box-shadow:0 0 0 1px var(--gold) inset}
+.opt .mark{flex:none;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;
+  display:grid;place-items:center;color:var(--gold);font-size:13px;margin-top:2px}
+.opt.picked .mark{background:var(--gold);color:#1a1206;border-color:var(--gold)}
+.opt span.t{font-size:16px;line-height:1.7}
+
+.nav-row{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.nav-row .btn{margin:0;padding:11px 26px;font-size:15px;letter-spacing:.2em;text-indent:.2em}
+.hint-empty{text-align:center;color:#8d8270;font-size:13px;margin-top:14px;letter-spacing:.1em;min-height:18px}
+
+/* ============ 结果 ============ */
+#loading{text-align:center;padding:120px 0}
+.loader-reel{font-size:46px;animation:spin 2.2s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{margin-top:20px;color:var(--ink-dim);letter-spacing:.3em;font-size:14px}
+
+#result{max-width:920px}
+.result-top{display:grid;grid-template-columns:320px 1fr;gap:0;border:1px solid var(--line);
+  border-radius:6px;overflow:hidden;background:linear-gradient(180deg,rgba(31,26,21,.94),rgba(18,15,12,.95));
+  box-shadow:0 22px 60px rgba(0,0,0,.55)}
+@media(max-width:760px){.result-top{grid-template-columns:1fr}}
+.poster{position:relative;min-height:420px;background:#0c0a08}
+@media(max-width:760px){.poster{min-height:0;height:min(70vw,460px)}}
+.poster img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.poster::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 55%,rgba(12,10,8,.9));}
+.poster-badge{position:absolute;left:14px;bottom:12px;z-index:2;font-size:12px;letter-spacing:.25em;color:var(--gold)}
+.result-head{padding:34px 36px;display:flex;flex-direction:column;justify-content:center}
+.matchline{font-size:13px;letter-spacing:.35em;color:var(--ink-dim)}
+.r-name{font-size:clamp(30px,5vw,44px);color:var(--gold-bright);letter-spacing:.1em;margin:6px 0 2px;font-weight:700;
+  text-shadow:0 2px 18px rgba(212,175,106,.3)}
+.r-drama{font-size:15px;color:var(--ink-dim);letter-spacing:.15em}
+.r-tag{display:inline-block;margin-top:16px;padding:5px 16px;border:1px solid var(--line);border-radius:30px;
+  font-size:13.5px;color:var(--gold);letter-spacing:.1em;width:fit-content}
+.pct-wrap{margin-top:24px}
+.pct-num{font-size:40px;font-weight:700;color:#fff;line-height:1}
+.pct-num small{font-size:17px;color:var(--ink-dim);font-weight:400;margin-left:6px}
+.pct-bar{height:9px;background:rgba(255,255,255,.08);border-radius:6px;margin-top:9px;overflow:hidden}
+.pct-bar i{display:block;height:100%;width:0;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--gold-bright));transition:width 1.1s ease .2s}
+
+.report{margin-top:26px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.r-block{padding:26px 30px;border-bottom:1px solid rgba(212,175,106,.16);
+  background:linear-gradient(180deg,rgba(28,23,19,.85),rgba(18,15,12,.9))}
+.r-block:last-child{border-bottom:none}
+.r-block h3{font-size:16px;color:var(--gold);letter-spacing:.28em;font-weight:700;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px}
+.r-block h3::before{content:"";width:18px;height:1px;background:var(--gold)}
+.r-block p{font-size:15.5px;color:var(--ink);line-height:2}
+.r-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.r-grid{grid-template-columns:1fr}}
+.r-mini{border:1px solid rgba(212,175,106,.18);border-radius:4px;padding:16px;background:rgba(10,8,7,.4)}
+.r-mini b{display:block;color:var(--gold-bright);font-size:14px;letter-spacing:.18em;margin-bottom:7px}
+.r-mini p{font-size:14px;line-height:1.85;color:var(--ink-dim)}
+.quote-box{text-align:center;font-size:19px;color:var(--gold-bright);letter-spacing:.06em;line-height:2;
+  padding:8px 10px}
+.quote-box .qm{font-size:30px;color:var(--gold);opacity:.6;vertical-align:-6px;margin:0 6px}
+
+.axis-wrap{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:center}
+@media(max-width:680px){.axis-wrap{grid-template-columns:1fr;justify-items:center}}
+.axis-list{display:grid;gap:14px}
+.axis-row .al-top{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-dim);letter-spacing:.08em;margin-bottom:5px}
+.axis-track{height:8px;background:rgba(255,255,255,.07);border-radius:5px;position:relative}
+.axis-track i{position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;
+  background:var(--gold-bright);box-shadow:0 0 10px rgba(212,175,106,.6);left:50%;
+  transform:translateX(-50%);transition:left 1s ease .2s}
+.axis-center{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(212,175,106,.4)}
+#radar{width:230px;height:230px}
+@media(max-width:680px){#radar{width:200px;height:200px}}
+
+.others{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.others{grid-template-columns:1fr}}
+.other-card{display:flex;gap:14px;align-items:center;border:1px solid rgba(212,175,106,.18);
+  border-radius:4px;padding:12px 14px;background:rgba(10,8,7,.4)}
+.other-card img{width:58px;height:74px;object-fit:cover;object-position:top center;border-radius:3px;flex:none;background:#111}
+.other-card .o-name{font-size:17px;color:var(--gold-bright)}
+.other-card .o-drama{font-size:12.5px;color:var(--ink-dim);letter-spacing:.1em}
+.other-card .o-pct{margin-left:auto;font-size:20px;color:#fff;font-weight:700}
+.fallback-name{width:58px;height:74px;flex:none;border-radius:3px;display:grid;place-items:center;
+  background:linear-gradient(160deg,#2a221a,#15110d);color:var(--gold);font-size:12px;text-align:center;padding:4px}
+.poster-fallback{width:100%;height:100%;min-height:420px;display:flex;flex-direction:column;gap:10px;
+  align-items:center;justify-content:center;background:linear-gradient(160deg,#241d15,#0f0c09);
+  color:var(--gold);font-size:26px;letter-spacing:.2em;text-align:center;padding:20px}
+.poster-fallback small{font-size:13px;color:var(--ink-dim);letter-spacing:.15em}
+
+.result-actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:32px 0 8px}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);z-index:60;
+  background:linear-gradient(180deg,#241d15,#17120d);border:1px solid var(--gold);color:var(--gold-bright);
+  padding:12px 26px;border-radius:4px;font-size:14.5px;letter-spacing:.12em;opacity:0;pointer-events:none;
+  transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.disclaimer{text-align:center;color:#6f6553;font-size:12px;letter-spacing:.12em;margin-top:26px;line-height:2}
+
+@media print{
+  body{background:#fff;color:#000}
+  .filmstrip,.cinema,.result-actions,.btn,.toast{display:none!important}
+  main{padding:0}
+  .screen{display:block!important;max-width:100%!important}
+  #intro,#quiz,#loading{display:none!important}
+  .r-block,.result-top{box-shadow:none;border-color:#999;background:#fff;color:#000}
+  .r-name,.r-block h3,.r-block p,.r-mini p,.r-drama,.matchline{color:#000}
+  .r-name,.r-block h3,.quote-box{color:#5a3d12}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+<div class="cinema" aria-hidden="true">
+  <div class="beam l"></div><div class="beam r"></div>
+  <div id="dusts"></div>
+</div>
+<div class="filmstrip left" aria-hidden="true"><div class="holes"></div></div>
+<div class="filmstrip right" aria-hidden="true"><div class="holes"></div></div>
+
+<main>
+  <!-- 开场 -->
+  <section id="intro" class="screen active">
+    <div class="curtain-hint">A  TIAN  XIWEI  PERSONALITY  TEST</div>
+    <svg class="projector" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <rect x="6" y="26" width="34" height="22" rx="3" stroke="#d4af6a" stroke-width="2"/>
+      <circle cx="22" cy="48" r="7" stroke="#d4af6a" stroke-width="2"/>
+      <path d="M40 31 L58 22 L58 42 L40 37 Z" stroke="#d4af6a" stroke-width="2" fill="rgba(212,175,106,.15)"/>
+      <circle cx="22" cy="37" r="5" fill="#f0d79a"/>
+    </svg>
+    <div class="title-board">
+      <h1>你最像田曦薇演过的<br>角色里的谁</h1>
+      <div class="starring">主 演 · <b>田 曦 薇</b></div>
+    </div>
+    <svg class="clap" viewBox="0 0 120 96" aria-hidden="true">
+      <path d="M8 34 L112 18 L112 34 L8 50 Z" fill="#1c1712" stroke="#d4af6a" stroke-width="2"/>
+      <path d="M8 34 L112 18" stroke="#d4af6a" stroke-width="1.5"/>
+      <path d="M26 31 L34 19 M48 27.5 L56 15.5 M70 24 L78 12 M92 20.5 L100 8.5" stroke="#f0d79a" stroke-width="3"/>
+      <rect x="8" y="50" width="104" height="40" rx="3" fill="#241d15" stroke="#d4af6a" stroke-width="2"/>
+      <text x="60" y="76" text-anchor="middle" fill="#f0d79a" font-size="15" letter-spacing="2" font-family="serif">ACTION</text>
+    </svg>
+    <p class="intro-sub">24 场戏，照见你藏在戏里的真我</p>
+    <button class="btn" id="startBtn">开 始 放 映</button>
+    <p class="intro-foot">本测试为粉丝向娱乐内容，与演员及剧组官方无关<br>剧照等版权归原权利人所有，打开页面需联网加载剧照</p>
+  </section>
+
+  <!-- 答题 -->
+  <section id="quiz" class="screen">
+    <div class="chapter-card">
+      <div class="reel" id="chEgg">🎬</div>
+      <div class="ch-no" id="chNo">第 一 卷</div>
+      <div class="ch-name" id="chName">试镜 · 第一印象</div>
+    </div>
+    <div class="progress-wrap">
+      <span class="scene-no" id="sceneNo">第 I 场 / 共 XXIV 场</span>
+      <div class="rail"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-egg" id="qEgg">🎞️</div>
+      <p class="scene-txt" id="sceneTxt"></p>
+      <h2 class="q-txt" id="qTxt"></h2>
+      <div class="opts" id="opts"></div>
+      <div class="nav-row">
+        <button class="btn ghost" id="prevBtn">‹ 上一场</button>
+        <button class="btn" id="nextBtn">下一场 ›</button>
+      </div>
+      <div class="hint-empty" id="hint"></div>
+    </div>
+  </section>
+
+  <!-- 加载 -->
+  <section id="loading" class="screen">
+    <span class="loader-reel">🎞️</span>
+    <p>胶 片 冲 洗 中 ， 正 在 揭 晓 命 运 角 色 …</p>
+  </section>
+
+  <!-- 结果 -->
+  <section id="result" class="screen"></section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {"characters": [{"id": "liwei", "name": "李薇", "drama": "卿卿日常", "year": "2022", "img": "https://s.coze.cn/image/1bYvWuisqZ4/", "color": "#7fb6d8", "tag": "治愈系乐天 · 甜妹天花板", "axes": {"sa": -1, "li": -1, "wo": -1}, "analysis": "你像李薇——一个把“好好生活”当成人生信条的人。你真诚、柔软、乐观，天生擅长在平淡日常里找到甜：一顿热饭、一个在意你的人、一方安稳的小天地，就足以让你满足。你看起来有些“想躺平”、贪吃又随遇而安，但这不是没主见，而是你很早就懂得：比起赢过别人，不被环境磨掉善意与温度更难。当真正需要你担起来的时候，你会从一只慵懒的猫，长成能与所爱之人并肩的人。你的强大不张扬，却绵长。", "love": "你在感情里要的是“烟火气的偏爱”。你不稀罕轰轰烈烈，你想要的是一个愿意和你吃很多顿饭、把你放在日常里认真对待的人。你慢热、需要安全感，一旦认定就全心全意；别因为太习惯迁就，而把自己真正的需求也一起咽下去。", "career": "你不是典型的野心家，但你有惊人的“环境适应力”和亲和力。在轻松、有人情味、能发挥照顾与协调天赋的位置上，你会做得非常出色。试着主动一点表达诉求——你值得被看见，不必总是等别人替你开口。", "tips": "和你相处很舒服，因为你从不端着。记得把照顾别人的那份细致，也分一半给自己。", "quote": "我没有什么大志向，就想安安稳稳，和喜欢的人，一日三餐，四季寻常。", "scene": "满桌新川美食前眼睛发亮，却也在关键时刻，稳稳站在了尹峥身边。"}, {"id": "lianmaner", "name": "连蔓儿", "drama": "田耕纪", "year": "2023", "img": "https://s.coze.cn/image/eKyck5-zHHI/", "color": "#d8a04c", "tag": "搞钱达人 · 野草系精明", "axes": {"sa": 0, "li": 1, "wo": 1}, "analysis": "你像连蔓儿——甜美只是你的保护色，骨子里是一棵风越大、根扎得越深的野草。你务实、精明、嗅觉灵敏，对“怎么把日子过好、怎么靠双手赚到钱”有着近乎本能的判断。极品亲戚、烂摊子、不公平的处境，别人抱怨，你却已经在盘算对策。你不是不近人情，而是太清楚：先有立足的本钱，善良才不会变成任人拿捏的软肋。你乐观、能扛事，越是泥泞里越要开出花来。", "love": "你在感情里很“清醒”，不会被几句甜言蜜语冲昏头。你欣赏能和你并肩奋斗、看得起你“折腾”的人，而不是要你回归安稳的人。你愿意为真爱掏心，但永远保留自己的底牌和退路——这不是算计，是你对自己的负责。", "career": "你是天生的经营者与执行者，搞钱、创业、处理复杂人际、在资源有限时打开局面，都是你的主场。别被“女孩子安稳点好”的声音框住，你的商业直觉和落地能力，是很多人求而不得的天赋。", "tips": "你太习惯靠自己，偶尔也允许别人替你撑一下伞。精明之外，别忘了犒劳那个一直很努力的自己。", "quote": "靠山山倒，靠人人跑，靠自己最好。这日子，我偏要越过越红火。", "scene": "在古代农村智斗极品亲戚、种田经商，凭一双手把烂牌打成王炸。"}, {"id": "linan", "name": "临安公主", "drama": "大奉打更人", "year": "2024", "img": "https://s.coze.cn/image/L3UubcSH-uA/", "color": "#d8514c", "tag": "明媚热烈 · 敢爱敢恨", "axes": {"sa": 1, "li": -1, "wo": 0}, "analysis": "你像临安——一团走到哪儿亮到哪儿的火。你明媚、直率、古灵精怪，从小被宠爱却没有被宠坏，心里始终揣着一份纯粹的赤诚。你情绪外放、爱憎分明，喜欢就坦荡靠近，不平就当场发作，不屑于拐弯抹角。而你最动人的地方在于成长：当风雨真的砸下来，那个无忧无虑的小公主会一夜长大，敢用血书陈冤、为公道挺身而出。你的娇憨之下，藏着让人意外的勇气与担当。", "love": "你是“敢爱敢恨”本人。爱上了就全力以赴、明目张胆地偏爱，受了委屈也绝不忍气吞声。你需要一个欣赏你的鲜活、接得住你热烈、也尊重你成长的人。别因为太投入，就把对方的回应当成衡量自己价值的标尺。", "career": "你感染力强、敢冲敢表现，适合站在台前、需要表达和开拓的舞台。你的软肋是有时凭情绪做事，学会在行动前多三秒冷静，你的胆量配上一点谋略，会非常可怕。", "tips": "你的真很珍贵，别为了变“成熟”就熄灭它。只需记得：热烈是你的光，分寸是你的盾。", "quote": "我临安想要的，从来没有得不到的；我认定的人，也容不得别人欺负半分。", "scene": "集娇惯与纯良于一身的二公主，在痛失至亲后，成长为敢为公道挺身而出的人。"}, {"id": "wuzhen", "name": "武祯", "drama": "子夜归", "year": "2025", "img": "https://s.coze.cn/image/-q3e22pNLHk/", "color": "#9b6bd8", "tag": "甜飒双面 · 掌控全场", "axes": {"sa": 1, "li": 1, "wo": 1}, "analysis": "你像武祯——一个拥有“两副面孔”的复杂灵魂。白日里你是风流傲娇、举手投足都带着矜贵气的贵女；夜幕降临，你又是冷冽霸气、掌控全局的妖市主宰。你把温柔和锋芒都收放自如：对值得的人，你内心柔软、甘愿守护；对冒犯你的人，你毫不手软。你不喜欢把命运交给任何人，权力、规则、节奏，最好都握在自己手里。这种甜与飒、娇与狠的反差，正是你最迷人的张力。", "love": "你在关系里需要“掌控感”，不会轻易缴械。你慕强，也护短，渴望一个既能与你势均力敌、又能让你安心卸下盔甲的人。你看似难追，其实一旦确认对方值得，你的深情和占有欲都浓烈而专一。", "career": "你天生有领导力和气场，擅长在复杂局面里立规矩、控节奏、做决断。别压抑你的野心去迎合“乖巧”的期待，你的谋略和掌控力，本就该用在更大的棋盘上。", "tips": "锋利是你的铠甲，但不必时刻穿着。允许极少数人看见你柔软的那一面，不是弱点，是亲密。", "quote": "白日我是阶前解语花，入夜我是城中执棋人——这局，从来由我做主。", "scene": "一面是傲娇贵女，一面是妖市“猫公”，甜飒娇狠在她身上无缝切换。"}, {"id": "fanchangyu", "name": "樊长玉", "drama": "逐玉", "year": "2026", "img": "https://s.coze.cn/image/yEJFDicn0o8/", "color": "#c0392b", "tag": "甜脸猛魂 · 沙场大女主", "axes": {"sa": 2, "li": 1, "wo": 1}, "analysis": "你像樊长玉——长着一张甜脸，却揣着一身“猛魂”。命运把最难的剧本塞给你：父母双亡、家道中落，你却从没想过依附谁，而是自己当户主、护妹妹、撑门庭，甚至想过“招赘”来护住这个家。你天生神力，更有一股不认命的狠劲，最终从市井屠户之女，一步步长成执刀上战场的女将军。你的坚韧不是口号，是风雪里一次次咬牙站起来。外柔内刚这四个字，你是最生动的注脚。", "love": "你在感情里同样“不按常理”，不接受被庇护、被安排的位置，你要的是并肩甚至并肩之上的尊重。你外冷内热，认定了便是生死相托的硬核深情。你需要的不是保护你的人，而是敢与你共赴沙场、也懂你疲惫的人。", "career": "你是顶级的“危机处理者”和开拓者，越是绝境、越是男性主导的硬核领域，越能激发你的潜力。责任、抗压、行动，是你刻在骨里的东西。别因为脸甜、心善，就低估了自己能扛起的重量。", "tips": "你习惯了做所有人的靠山，也要学会在疲惫时说一句“我撑不住了”。能扛是本事，会喘息是智慧。", "quote": "我樊长玉的命，我自己扛。刀山火海我自己走，从没想过要等谁来救。", "scene": "屠户出身的少女握着杀猪刀上战场，寻亲寻夫寻正义，活成沙场女将军。"}, {"id": "huangchengzi", "name": "黄橙子", "drama": "如此可爱的我们", "year": "2020", "img": "https://s.coze.cn/image/jr9Vk-VYZ4g/", "color": "#f2c14e", "tag": "元气甜妹 · 邻家倔强", "axes": {"sa": -1, "li": -1, "wo": -1}, "analysis": "你像黄橙子——一个从青春里直接走出来的女孩子。你鲜活、灵动、情绪都写在脸上，开心时梨涡深陷，闹脾气时鼓鼓的，带着点小倔强和小傲娇。你重感情、讲义气，对朋友和家人掏心掏肺，在梦想和喜欢的人面前会笨拙却认真地努力。你不完美，会冲动、会嘴硬、会为小事纠结，但正是这种真实，让身边的人都忍不住喜欢你、想守护你身上那点没被生活磨平的少年气。", "love": "你在喜欢的人面前是个别扭又可爱的存在：嘴上不饶人，心里却比谁都在意。你渴望青梅竹马式的、知根知底的长久感情，会因为一点小事吃醋，也会为对方悄悄变好。勇敢一点，别总让对方猜。", "career": "你有灵气和感染力，适合需要真诚、表达和与人打交道的事。你的成长课题是“坚持”和“抗挫”——别被一时的打击劝退，你的灵动配上长期主义，会走得很远。", "tips": "保留你的真与倔，那是你最可爱的地方。同时多给自己一点底气，你比自己以为的更值得被喜欢。", "quote": "我才没有不高兴呢！……好吧，就一点点。但我还是会好好努力给你们看的。", "scene": "树德家属院里，和朋友们一起长大，会哭会笑、倔强又软萌的 90 后少女。"}, {"id": "liyuhu", "name": "李玉湖", "drama": "花轿喜事", "year": "2023", "img": "https://s.coze.cn/image/-ulEm_F0rRU/", "color": "#e88aa0", "tag": "飒爽侠气 · 古灵精怪", "axes": {"sa": 1, "li": 0, "wo": 0}, "analysis": "你像李玉湖——一个会武功、有脾气、天不怕地不怕的灵动少女。你爽朗、率真、行动比脑子快，路见不平必拔刀，受了委屈绝不憋着。你身上有一股江湖儿女的侠气，不爱宅门里的弯弯绕绕，也装不来大家闺秀的端庄，常常闹出笑话，却歪打正着化解困局。你的魅力正在这份“不按套路出牌”的鲜活：真性情、讲义气、护身边人，看着没心没肺，关键时刻比谁都靠得住。", "love": "你在感情里是“欢喜冤家”体质，越斗嘴越上头，容易被那个能接住你所有招、还能反过来治住你的人吸引。你爱得坦荡直接，不爱算计，认准了就死心塌地。偶尔收敛一点莽撞，能让你们少很多啼笑皆非的误会。", "career": "你执行力爆棚、敢于出头，适合节奏快、需要临场反应和魄力的事。你的课题是“谋定而后动”——先看清局面再出手，能避免好心办坏事。把你的勇气用在对的方向，你是能打硬仗的人。", "tips": "你的直率是难得的清爽，别被磨成圆滑。只需在出拳前多看一眼，谁是朋友、谁是局。", "quote": "我李玉湖行不更名坐不改姓，路见不平自然要管，谁怕谁啊！", "scene": "错上花轿的武馆少女，一身侠气闯宅门，闹出无数啼笑皆非又痛快的故事。"}, {"id": "suxiaohe", "name": "苏小荷", "drama": "我的宠物少将军", "year": "2021", "img": "https://s.coze.cn/image/s7tJNx_OGf8/", "color": "#8ed0c2", "tag": "软萌机灵 · 外柔内韧", "axes": {"sa": -1, "li": 0, "wo": 0}, "analysis": "你像苏小荷——看起来软萌好捏，其实机灵得很。你活泼、好奇、脑洞大，经营着自己的小天地，对喜欢的人和小动物毫无抵抗力。你不是那种强势的性格，遇到事先是慌一下、萌一下，可真被逼到份上，你又总能抖出意想不到的小聪明，化险为夷。你的温柔里带着弹性，可爱里藏着生存智慧，属于“越相处越有惊喜”的类型：治愈、有趣、还很扛造。", "love": "你对心动的反应很“猫系”：会好奇、会试探、会嘴硬，也会被对方一点点的温柔打动。你需要一个让你有安全感、愿意陪你奇奇怪怪的人。别因为害怕受伤就一直缩在壳里，适当主动，幸福才会找上门。", "career": "你擅长营造氛围、照顾细节、经营小而美的事，在创意、服务、与生命/治愈相关的领域会很发光。别小看自己的“软”——亲和力和奇思妙想，是硬核能力之外的另一种稀缺天赋。", "tips": "你的萌是真，韧也是真。别总把自己当需要被保护的那个，必要时你比谁都机灵能扛。", "quote": "别看我好像什么都不会，真到了要紧关头，我苏小荷可从来没掉过链子。", "scene": "软萌的宠物店女老板，意外捡回来自“喵星”的猫王子，开启奇幻又搞笑的缘分。"}, {"id": "hezhinan", "name": "何知南", "drama": "半熟男女", "year": "2024", "img": "https://s.coze.cn/image/zC4FyAsWaoA/", "color": "#b08968", "tag": "都市半熟 · 清醒成长", "axes": {"sa": 0, "li": 1, "wo": 0}, "analysis": "你像何知南——一个正在“成人世界”里摸爬滚打、学着变清醒的都市女性。你敏感、细腻、有自己的审美和小世界，对爱情和生活都曾有过浪漫想象。现实里的暧昧、权衡、伤害，会让你失落、内耗，但你没有因此变得犬儒，而是在一次次疼痛里学会分辨真心、守住边界。你的“半熟”是一种珍贵的状态：既没有天真到轻信，也没有世故到冷漠，仍愿意爱，只是更懂得先爱自己。", "love": "你在感情里走的是“成长型”路线，容易被浪漫和情绪价值打动，也容易在不对等的关系里内耗。你需要的不是最会撩的人，而是言行一致、愿意给你确定感的人。学会及时止损、把注意力收回自己身上，是你最重要的情场功课。", "career": "你有审美、共情和洞察力，适合需要理解人、表达、创造的工作。你的课题是建立稳定的自我评价体系——别让一段关系或别人的态度，决定你今天值不值得开心。", "tips": "允许自己半熟，允许自己犯错再长大。清醒不是变冷，是终于学会把温柔也留给自己。", "quote": "我还在学，学着不把别人的忽冷忽热，当成自己的过错；学着先把自己爱明白。", "scene": "在都市的暧昧与现实之间跌跌撞撞，从恋爱脑一点点长成有边界的成年人。"}, {"id": "linzhixia", "name": "林知夏", "drama": "天才女友", "year": "2026", "img": "https://s.coze.cn/image/e-UUYGG-U0s/", "color": "#5b8fb9", "tag": "清冷学霸 · 赤诚社恐", "axes": {"sa": 0, "li": 2, "wo": 0}, "analysis": "你像林知夏——一个把聪明写在脸上、把柔软藏在心底的天才少女。你理性、直接、逻辑极强，在擅长的领域里闪闪发光，却不擅长、也懒得应付复杂的人情世故，因此常被误会成高冷或难接近。其实你不是冷漠，而是社交对你来说成本太高，你更愿意把精力留给真正在意的人和事。一旦有人走进你的世界，你会用自己笨拙又真诚的方式对他好。你的清醒，是这个聒噪世界里稀缺的定力。", "love": "你在感情里慢热且被动，不太会表达，甚至会用“讲道理”来掩饰心动。你需要一个主动、温暖、有耐心、不会把你的直接当恶意的人。你一旦信任，会给出非常纯粹、长久的深情。别因为怕麻烦就把所有人都挡在门外。", "career": "你是典型的“专业型人才”，在学术、技术、研究等需要深度专注的领域会远超常人。你的课题不是变聪明，而是补一点“软实力”：适度表达、经营关系、让别人看见你的善意，会让你的才华被更多人接住。", "tips": "不必强迫自己变成社牛。保持你的赤诚就好，只是偶尔，把心里的在意说出口，别让人猜。", "quote": "公式有唯一解，但人没有。我可能不太懂怎么靠近你，可我是认真的。", "scene": "不善交际的天才少女，在学霸同桌的陪伴下，第一次学会解题之外的事——朋友与喜欢。"}, {"id": "liqian", "name": "李茜", "drama": "低智商犯罪", "year": "2026", "img": "https://s.coze.cn/image/AivObYQDLaY/", "color": "#6c7a89", "tag": "干练女警 · 果决正气", "axes": {"sa": 1, "li": 1, "wo": 0}, "analysis": "你像李茜——一个利落、机警、心里有杆秤的行动派。你理性、干练、反应快，面对混乱和危险不会先慌，而是迅速进入“解决问题”模式。你有强烈的正义感和责任心，看不惯是非颠倒，也不喜欢拖泥带水。表面上你是个铁面、飒爽、不好惹的职场女性，其实你也有柔软和懵懂的一面，只是你更习惯用专业和靠谱把它收起来。在一团乱麻的现实里，你就是那个能把线头一根根理清的人。", "love": "你在感情里同样有原则、不恋爱脑，欣赏有担当、能力和品行都在线的人，对油嘴滑舌和越界行为零容忍。你不擅长示弱，也很少依赖，需要一个懂得尊重你的专业、也能让你安心卸下防备的人。偶尔柔软，不会折损你的强大。", "career": "你天生适合规则清晰、需要判断、执行和担当的岗位，越是高压、越是要讲证据和逻辑的环境，你越能如鱼得水。注意别把工作里的紧绷全带回生活，也别对身边人的情绪太“钝感”。", "tips": "你的可靠和正气值得信赖。但人不是案子，不需要时刻保持警觉，学会在安全的关系里放松。", "quote": "慌解决不了问题。证据、逻辑、行动——剩下的，交给公道。", "scene": "精明干练的新人警官，在一群“蠢贼”制造的荒诞连环案里，靠智慧与勇气抽丝剥茧。"}, {"id": "jundai", "name": "君黛", "drama": "嫁金钗", "year": "2026", "img": "https://s.coze.cn/image/MrH_IgruabM/", "color": "#7d3c54", "tag": "骄纵恶女 · 锋利清醒", "axes": {"sa": 1, "li": 1, "wo": 2}, "analysis": "你像君黛——一朵带刺、有毒、却美得让人移不开眼的花。你骄纵、聪明、目标感极强，从小习惯了掌控与得到，因此绝不接受被安排、被夺走、被冒犯。你深谙人心与规则，必要时可以心狠手辣、颠倒黑白，把示弱和眼泪都当作武器。但“恶女”不是天生的：在你层层算计与偏执之下，藏着的是对失控命运的极度不安。你不是没有温度，而是早早认定——在这局棋里，心软的人只会输。", "love": "你在关系里强势、占有欲强，习惯占据上风、考验对方，很难真正交付信任。你渴望被偏爱到例外，却又用伤害来试探真心。若你愿意承认自己也会害怕、也想被接住，你会发现：掌控一切未必幸福，敢在一个人面前不设防，才是真正的赢。", "career": "你有顶级的谋略、手腕和心理博弈能力，在竞争激烈、需要布局和谈判的领域会是极难对付的存在。提醒你的是：手段能让你赢一时，底线和人心才决定你能走多远，别让恐惧把你变成自己曾经讨厌的样子。", "tips": "你的聪明和狠劲是天赋，更是铠甲。可铠甲穿太久会长进肉里——偶尔承认脆弱，不等于满盘皆输。", "quote": "我想要的东西，从来只会自己去拿。谁敢挡路，就要付得起代价。", "scene": "伯府真千金，骄纵狠厉、心机深沉，为躲开婚事不择手段，演活了“甜脸恶女”。"}, {"id": "weirao", "name": "魏娆", "drama": "嫁金钗", "year": "2026", "img": "https://s.coze.cn/image/6TOxCEpApf8/", "color": "#a8956d", "tag": "隐忍孤女 · 暗蓄锋芒", "axes": {"sa": 0, "li": 1, "wo": 1}, "analysis": "你像魏娆——一粒落在泥里、却始终没有烂掉的种子。你出身卑微、命运被人摆布，因一张相似的脸被推入替嫁的局，身边全是看你笑话、随时能捏死你的人。你学会了低头、隐忍、察言观色，把锋芒和恨意都藏进温顺的皮囊。但你绝不认命：表面柔弱，心里却在一寸寸丈量出路，等待翻盘的时机。你的可怕与可敬，都在于这份绝境中的清醒和韧性——你可以暂时弯腰，但脊梁从来没断。", "love": "你很难真正相信任何人，因为你太早见识过人性的凉薄。你对感情既渴望又戒备，习惯先确认安全、再交付真心。你需要的是一个用长期、稳定、不求回报的行动慢慢焐热你的人。请相信：你值得被爱，不是因为你有用，而仅仅因为你是你。", "career": "你有惊人的忍耐力、观察力和“在夹缝中求生”的智慧，适合复杂、需要蛰伏与谋略的环境。你的课题是区分“隐忍蓄力”和“过度自我压抑”——该忍时忍，该亮剑时也别手软，你早已不是任人宰割的那个阿丑。", "tips": "低头是你的生存策略，别让它成为你的自我认知。熬过寒冬的人，最有资格在春天挺直腰杆。", "quote": "我可以跪着活下去，但我心里清楚，总有一天，我要自己站起来。", "scene": "底层孤女被迫替嫁冲喜，在步步杀机的侯府里隐忍周旋，于绝境中寻找翻盘之机。"}], "questions": [{"ch": 1, "scene": "开学/入职第一天，你走进一间谁都不认识的屋子，所有人的目光短暂地落在你身上。", "q": "你最自然的第一反应是？", "opts": [{"text": "笑着和最近的人打招呼，先混个脸熟再说，气氛由我来热", "w": {"linan": 3, "huangchengzi": 2, "suxiaohe": 2}, "a": [-1, -1, -1]}, {"text": "安静找个位置，先观察一圈，搞清楚都是些什么人", "w": {"linzhixia": 3, "weirao": 2, "hezhinan": 2}, "a": [0, 1, 0]}, {"text": "大大方方自我介绍，让大家记住我，最好顺便成全场焦点", "w": {"wuzhen": 2, "liyuhu": 2, "fanchangyu": 2, "jundai": 1}, "a": [2, 0, 1]}, {"text": "默默盘算这里有什么机会、谁值得结交，心里已有了张图", "w": {"lianmaner": 3, "liqian": 2, "jundai": 2, "weirao": 1}, "a": [0, 1, 1]}]}, {"ch": 1, "scene": "一场热闹的聚会，音乐很响，人群三三两两。", "q": "你通常是哪种状态？", "opts": [{"text": "端着吃的喝的，哪儿舒服待哪儿，和熟朋友窝一晚上就很好", "w": {"liwei": 3, "suxiaohe": 2}, "a": [-1, 0, -1]}, {"text": "全场最嗨的那个，串场子、带气氛、谁都能聊两句", "w": {"linan": 3, "liyuhu": 2, "huangchengzi": 2}, "a": [1, -1, -1]}, {"text": "找几个有意思的人深聊，宁可少而精，不爱无意义寒暄", "w": {"linzhixia": 3, "wuzhen": 2, "hezhinan": 1}, "a": [0, 1, 0]}, {"text": "尽量不参加，或者待到一半就想走，社交对我来说挺耗电", "w": {"linzhixia": 2, "weirao": 2, "jundai": 1}, "a": [0, 1, 1]}]}, {"ch": 1, "scene": "朋友兴冲冲拉你去做一件你完全没把握、还可能出丑的事。", "q": "你会？", "opts": [{"text": "先担心半天，但看朋友那么高兴，还是硬着头皮陪一把", "w": {"liwei": 2, "huangchengzi": 2, "suxiaohe": 2, "hezhinan": 1}, "a": [-1, -1, -1]}, {"text": "干就完了！出丑怎么了，好玩最重要", "w": {"liyuhu": 3, "linan": 3}, "a": [2, -1, 0]}, {"text": "先问清楚规则和风险，评估完再决定玩不玩、怎么玩", "w": {"liqian": 3, "linzhixia": 2, "wuzhen": 1}, "a": [1, 2, 0]}, {"text": "笑着答应，心里却在想：这事对我有什么好处、会不会被人看笑话", "w": {"jundai": 3, "weirao": 2, "lianmaner": 2}, "a": [0, 1, 1]}]}, {"ch": 1, "scene": "别人第一次和你接触后，最常给你的评价是？", "q": "（凭直觉选最接近的）", "opts": [{"text": "“你好甜 / 好可爱 / 看着就想保护”", "w": {"liwei": 3, "huangchengzi": 2, "suxiaohe": 3}, "a": [-2, 0, 0]}, {"text": "“你看着软软的，没想到这么能扛 / 这么有主意”", "w": {"fanchangyu": 3, "weirao": 2, "lianmaner": 2}, "a": [1, 1, 1]}, {"text": "“你气场好强 / 有点不敢惹 / 一看就不好欺负”", "w": {"wuzhen": 3, "jundai": 2, "liqian": 2}, "a": [2, 1, 1]}, {"text": "“你挺冷的 / 看不太透 / 一开始以为你不好接近”", "w": {"linzhixia": 3, "jundai": 1, "weirao": 2}, "a": [0, 1, 1]}]}, {"ch": 1, "scene": "排队时有人明目张胆地插到你前面，回头还挑衅地看了你一眼。", "q": "你会？", "opts": [{"text": "当场怼回去：“排队去，后面大家都看着呢。”", "w": {"linan": 3, "liyuhu": 3, "fanchangyu": 2}, "a": [2, 0, 0]}, {"text": "提高音量、有理有据地理论，必要时找工作人员，绝不吃哑巴亏", "w": {"liqian": 3, "lianmaner": 2, "wuzhen": 2}, "a": [1, 1, 0]}, {"text": "心里很气，但不想当众起冲突，可能就算了、暗暗记一笔", "w": {"weirao": 2, "hezhinan": 2, "suxiaohe": 1}, "a": [-1, 0, 1]}, {"text": "懒得计较，退一步海阔天空，别影响我一天心情", "w": {"liwei": 3, "huangchengzi": 1}, "a": [-1, -1, -1]}]}, {"ch": 2, "scene": "你发现自己好像喜欢上了一个人。", "q": "你的第一反应更接近？", "opts": [{"text": "藏不住，全写在脸上，忍不住想靠近、想对他好", "w": {"linan": 3, "huangchengzi": 2, "suxiaohe": 2}, "a": [-1, -1, -1]}, {"text": "嘴上死不承认，疯狂嘴硬，还要斗嘴引起注意", "w": {"liyuhu": 3, "huangchengzi": 2}, "a": [1, -1, 0]}, {"text": "很被动很慢热，反复确认对方心意和靠不靠谱，绝不先轻举妄动", "w": {"linzhixia": 2, "hezhinan": 2, "weirao": 2}, "a": [0, 1, 1]}, {"text": "评估我们是否势均力敌、这段关系会不会让我失去主动权", "w": {"wuzhen": 3, "jundai": 3, "lianmaner": 1}, "a": [1, 2, 1]}]}, {"ch": 2, "scene": "在一段关系里，你最看重的是？", "q": "（选最不能妥协的那一项）", "opts": [{"text": "安稳与陪伴：一日三餐、把彼此放进未来里的确定感", "w": {"liwei": 3, "hezhinan": 2}, "a": [-1, -1, -1]}, {"text": "真诚与专一：认定了就别背叛，容不得暧昧和欺瞒", "w": {"linan": 3, "fanchangyu": 2, "liqian": 2}, "a": [0, 1, -1]}, {"text": "并肩与尊重：能一起成长，看得起我的事业和野心", "w": {"fanchangyu": 3, "wuzhen": 2, "lianmaner": 2}, "a": [1, 1, 1]}, {"text": "掌控与例外：我要做最特殊的那个，关系的节奏得我能说了算", "w": {"jundai": 3, "wuzhen": 2}, "a": [1, 1, 2]}]}, {"ch": 2, "scene": "和喜欢的人闹了别扭，对方一时半会儿没理你。", "q": "你会？", "opts": [{"text": "难过又嘴硬，等他来哄，但其实心里已经软成一团", "w": {"huangchengzi": 3, "suxiaohe": 2, "liwei": 2}, "a": [-1, -1, -1]}, {"text": "直接去找他把话说开，不喜欢冷战，对错讲清楚", "w": {"linan": 2, "liyuhu": 2, "liqian": 3}, "a": [1, 1, 0]}, {"text": "先各自冷静，复盘整件事到底是谁的问题、值不值得继续", "w": {"linzhixia": 3, "hezhinan": 2, "lianmaner": 2}, "a": [0, 2, 1]}, {"text": "不动声色，甚至故意冷着他，看谁先撑不住、谁更在乎", "w": {"jundai": 3, "weirao": 2, "wuzhen": 2}, "a": [1, 1, 2]}]}, {"ch": 2, "scene": "你无意中发现，信任的人在背后说了伤害你的话。", "q": "你会？", "opts": [{"text": "非常受伤，可能会哭、会当面质问，情绪全摆在脸上", "w": {"linan": 2, "hezhinan": 3, "huangchengzi": 2}, "a": [-1, -1, 0]}, {"text": "当场翻脸，这种人不留着过年，直接划清界限", "w": {"liyuhu": 2, "fanchangyu": 2, "liqian": 2}, "a": [2, 1, 0]}, {"text": "表面不动，默默收回信任、疏远对方，以后再不来往", "w": {"weirao": 3, "jundai": 2, "linzhixia": 2}, "a": [0, 1, 1]}, {"text": "记下来，找机会让他知道得罪我的代价", "w": {"jundai": 3, "wuzhen": 2}, "a": [1, 1, 2]}]}, {"ch": 2, "scene": "关于“为爱情付出”，你的真实想法是？", "q": "哪一句最像你？", "opts": [{"text": "爱一个人就该全心全意，我愿意为他改变、为我们的小家付出", "w": {"liwei": 3, "huangchengzi": 1}, "a": [-2, -1, -2]}, {"text": "我可以很爱你，但绝不会因此失去自我和独立", "w": {"fanchangyu": 3, "lianmaner": 2, "wuzhen": 2, "liqian": 1}, "a": [1, 1, 1]}, {"text": "感情是两个人的事，付出要对等，单方面的好我不干", "w": {"hezhinan": 3, "linzhixia": 2, "lianmaner": 1}, "a": [0, 2, 0]}, {"text": "谁先认真谁就输了，我可以享受爱，但绝不交出全部底牌", "w": {"jundai": 3, "weirao": 2}, "a": [1, 1, 2]}]}, {"ch": 3, "scene": "一个天大的烂摊子突然砸到你头上，所有人都慌了。", "q": "你的第一反应是？", "opts": [{"text": "先深呼吸，然后卷起袖子——慌没用，先解决眼前第一件事", "w": {"fanchangyu": 3, "liqian": 3, "lianmaner": 2}, "a": [1, 1, 0]}, {"text": "脑子飞速转，把局面、利害、每个人的位置全部过一遍再出手", "w": {"wuzhen": 3, "jundai": 2, "linzhixia": 2}, "a": [1, 2, 1]}, {"text": "先稳住大家情绪，安抚完别人，再悄悄处理自己的害怕", "w": {"liwei": 2, "suxiaohe": 2, "hezhinan": 1}, "a": [-1, -1, -1]}, {"text": "先不吭声，看清是谁的责任、谁能利用、怎么把自己摘干净", "w": {"weirao": 3, "jundai": 3}, "a": [0, 1, 2]}]}, {"ch": 3, "scene": "压力大到快撑不住的时候，你通常会？", "q": "", "opts": [{"text": "硬扛，谁也不说，咬牙熬过去是我最擅长的事", "w": {"fanchangyu": 3, "weirao": 2, "liqian": 2}, "a": [2, 1, 1]}, {"text": "找信任的人吐槽、哭一场、吃顿好的，回血后又是一条好汉", "w": {"linan": 2, "huangchengzi": 2, "liwei": 2}, "a": [-1, -1, -1]}, {"text": "理性拆解：把问题列出来，一项项解决，情绪先放一边", "w": {"linzhixia": 3, "liqian": 2}, "a": [0, 2, 0]}, {"text": "表面云淡风轻，暗地里加倍筹谋，把压力变成翻盘的动力", "w": {"jundai": 2, "wuzhen": 2, "lianmaner": 2, "weirao": 1}, "a": [1, 1, 1]}]}, {"ch": 3, "scene": "有人仗势当众羞辱你，把你逼到很难堪的境地。", "q": "你会？", "opts": [{"text": "当场不忍，哪怕实力不如也要顶回去，骨气不能丢", "w": {"fanchangyu": 3, "liyuhu": 3, "linan": 2}, "a": [2, 0, 0]}, {"text": "暂时低头隐忍，把屈辱记下，等有能力时连本带利讨回来", "w": {"weirao": 3, "jundai": 2}, "a": [0, 1, 1]}, {"text": "冷静抓住对方话里的漏洞，用逻辑和事实让他自己难堪", "w": {"liqian": 3, "linzhixia": 3, "wuzhen": 1}, "a": [1, 2, 0]}, {"text": "心里很难受，可能先离开现场，但会努力让自己以后不再处于下风", "w": {"hezhinan": 2, "liwei": 1, "suxiaohe": 2}, "a": [-1, 0, 0]}]}, {"ch": 3, "scene": "如果必须在“安稳的生活”和“很冒险但可能改变命运的机会”之间选。", "q": "你会？", "opts": [{"text": "选安稳，平平淡淡、一家人在一起才是真的好", "w": {"liwei": 3, "suxiaohe": 1}, "a": [-1, -1, -1]}, {"text": "搏一把！机会难得，我不怕输，大不了从头再来", "w": {"fanchangyu": 3, "linan": 2, "liyuhu": 2}, "a": [2, 0, 0]}, {"text": "算清楚成功率和最坏结果，胜率够高就果断出手", "w": {"lianmaner": 3, "liqian": 2, "linzhixia": 2}, "a": [1, 2, 1]}, {"text": "我从来不喜欢被动选择——我要成为制定规则、让别人来适应的人", "w": {"wuzhen": 3, "jundai": 3}, "a": [1, 1, 2]}]}, {"ch": 3, "scene": "经历一次重大失败后，你恢复过来的方式更像？", "q": "", "opts": [{"text": "允许自己丧几天，被朋友和家人治愈，然后重新出发", "w": {"liwei": 2, "huangchengzi": 2, "hezhinan": 2}, "a": [-1, -1, -1]}, {"text": "很快，越挫越勇，失败只会让我更想证明自己", "w": {"fanchangyu": 3, "linan": 2, "liyuhu": 2}, "a": [2, 0, 0]}, {"text": "复盘失败原因，搞清楚哪里出了错，下次绝不再犯", "w": {"linzhixia": 3, "liqian": 3, "lianmaner": 2}, "a": [0, 2, 0]}, {"text": "表面很快恢复，实际把不甘和教训都藏起来，转化成更狠的布局", "w": {"jundai": 2, "weirao": 3, "wuzhen": 1}, "a": [1, 1, 1]}]}, {"ch": 4, "scene": "关于事业和人生目标，你内心真正的声音是？", "q": "", "opts": [{"text": "我没那么大野心，把小日子过好、被喜欢的人围绕就很幸福", "w": {"liwei": 3, "suxiaohe": 2}, "a": [-2, 0, -1]}, {"text": "我想凭本事赢，做到这个领域里别人替代不了的位置", "w": {"fanchangyu": 3, "liqian": 2, "linzhixia": 2}, "a": [2, 1, 1]}, {"text": "我想拥有掌控感和话语权，不被任何人安排命运", "w": {"wuzhen": 3, "jundai": 3}, "a": [1, 1, 2]}, {"text": "我想经济独立、把日子越过越红火，有实实在在的安全感", "w": {"lianmaner": 3, "hezhinan": 2, "weirao": 1}, "a": [0, 1, 1]}]}, {"ch": 4, "scene": "团队合作时，你通常扮演的角色是？", "q": "", "opts": [{"text": "润滑剂和气氛担当，照顾每个人情绪，让大家愿意一起干", "w": {"liwei": 3, "suxiaohe": 2, "hezhinan": 1}, "a": [-1, -1, -1]}, {"text": "冲在最前面的执行者，脏活累活难活我先上", "w": {"fanchangyu": 3, "liyuhu": 2, "linan": 1}, "a": [2, 0, 0]}, {"text": "拿主意的人，定方向、做决策、关键时候拍板", "w": {"wuzhen": 3, "liqian": 2, "jundai": 2}, "a": [1, 1, 1]}, {"text": "出谋划策的大脑，分析问题、设计方案、算清利弊", "w": {"linzhixia": 3, "lianmaner": 2, "weirao": 2}, "a": [0, 2, 1]}]}, {"ch": 4, "scene": "一个很好的机会，但需要你踩着一点规则边缘、甚至利用别人才能拿到。", "q": "你会？", "opts": [{"text": "不做，良心不安，成功了我也睡不好觉", "w": {"liwei": 3, "huangchengzi": 2, "linan": 2}, "a": [-1, -1, -1]}, {"text": "看情况，在不真正伤害无辜者的前提下，可以灵活变通", "w": {"lianmaner": 3, "wuzhen": 2, "liyuhu": 1}, "a": [1, 1, 1]}, {"text": "坚决靠实力和规则赢，捷径往往标着最贵的价码", "w": {"liqian": 3, "linzhixia": 3, "fanchangyu": 1}, "a": [1, 2, 0]}, {"text": "会。赢的人书写规则，心软和清高在这局里最没用", "w": {"jundai": 3, "weirao": 2}, "a": [1, 1, 2]}]}, {"ch": 4, "scene": "别人对你的能力提出公开质疑，说“你一个女孩子做不到的”。", "q": "你会？", "opts": [{"text": "当场被激起斗志：等着，我做给你看，偏要做成", "w": {"fanchangyu": 3, "linan": 2, "liyuhu": 2, "huangchengzi": 1}, "a": [2, 0, 0]}, {"text": "懒得争辩，用结果和数据说话，做成了比吵赢更有力", "w": {"linzhixia": 3, "liqian": 2, "lianmaner": 2}, "a": [1, 2, 0]}, {"text": "心里冷笑，记下这个人，等我坐到他头上那天再说", "w": {"jundai": 2, "wuzhen": 3, "weirao": 2}, "a": [1, 1, 2]}, {"text": "会有些难过和自我怀疑，需要身边人鼓励才能重新振作", "w": {"hezhinan": 3, "liwei": 2, "suxiaohe": 1}, "a": [-1, -1, 0]}]}, {"ch": 4, "scene": "如果用一种东西比喻你最想拥有的人生状态，它是？", "q": "", "opts": [{"text": "一盏暖灯和一桌热饭：安稳、被爱、有人等我回家", "w": {"liwei": 3, "suxiaohe": 2}, "a": [-2, -1, -1]}, {"text": "一把出鞘的刀：锋利、自由、能斩断一切束缚", "w": {"fanchangyu": 3, "liyuhu": 2, "wuzhen": 1}, "a": [2, 1, 1]}, {"text": "一盘尽在掌握的棋：每一步都算得到，胜负由我", "w": {"jundai": 3, "wuzhen": 3, "linzhixia": 1}, "a": [1, 2, 2]}, {"text": "一片越垦越肥的田：靠双手经营，日子一天天更好", "w": {"lianmaner": 3, "liqian": 1, "weirao": 1}, "a": [0, 1, 0]}]}, {"ch": 5, "scene": "终极抉择：你最信任的人身陷巨大的危险，而救他可能赔上你的一切。", "q": "你会？", "opts": [{"text": "毫不犹豫地冲上去，所爱之人比我自己的安危更重要", "w": {"linan": 3, "fanchangyu": 2, "liwei": 3}, "a": [0, -1, -2]}, {"text": "去，但不是莽冲——我会带上所有能用的筹码和计划去救", "w": {"fanchangyu": 2, "liqian": 3, "wuzhen": 2, "lianmaner": 2}, "a": [1, 2, -1]}, {"text": "先冷静权衡，寻找既能救他、又能保全自己的最优解", "w": {"linzhixia": 3, "hezhinan": 2, "jundai": 1}, "a": [0, 2, 0]}, {"text": "我会先确认这会不会是针对我的局，再决定救不救、怎么救", "w": {"jundai": 3, "weirao": 3}, "a": [0, 1, 2]}]}, {"ch": 5, "scene": "如果有一天你拥有了极大的权力，你最可能怎么用它？", "q": "", "opts": [{"text": "护住我爱的人，让他们都过上安稳好日子就够了", "w": {"liwei": 3, "linan": 1, "suxiaohe": 1}, "a": [-1, -1, -1]}, {"text": "护公道、惩恶人，做该做的事，不负这身位置", "w": {"liqian": 3, "fanchangyu": 2, "liyuhu": 2}, "a": [2, 1, -1]}, {"text": "实现我的抱负和秩序，让一切按我的规则高效运转", "w": {"wuzhen": 3, "linzhixia": 1}, "a": [1, 2, 1]}, {"text": "确保再也没人能摆布我、伤害我，让所有欠我的人付出代价", "w": {"jundai": 3, "weirao": 2}, "a": [1, 1, 2]}]}, {"ch": 5, "scene": "回望过去，你最希望别人记住你是一个怎样的人？", "q": "", "opts": [{"text": "一个温暖、善良、和我在一起会觉得世界很美好的人", "w": {"liwei": 3, "suxiaohe": 2, "huangchengzi": 2, "hezhinan": 1}, "a": [-2, -1, -1]}, {"text": "一个勇敢、有担当、说到做到、关键时刻靠得住的人", "w": {"fanchangyu": 3, "linan": 2, "liqian": 2, "liyuhu": 1}, "a": [2, 1, -1]}, {"text": "一个清醒、聪明、看透规则还能掌控自己人生的人", "w": {"linzhixia": 3, "wuzhen": 2, "lianmaner": 2}, "a": [1, 2, 1]}, {"text": "一个在绝境里也没被打倒、最终凭自己翻盘改命的人", "w": {"weirao": 3, "jundai": 2, "lianmaner": 1}, "a": [1, 1, 1]}]}, {"ch": 5, "scene": "最后一题——如果人生是一部由你主演的戏，你希望它是？", "q": "", "opts": [{"text": "一部温暖治愈的生活剧：平凡、热闹、三餐四季，笑中带泪", "w": {"liwei": 3, "huangchengzi": 2, "suxiaohe": 2}, "a": [-1, -1, -1]}, {"text": "一部热血成长的大女主剧：从低谷一路打怪，燃到最后", "w": {"fanchangyu": 3, "lianmaner": 2, "linan": 1}, "a": [2, 1, 1]}, {"text": "一部高智商悬疑剧：步步为营、反转不断，赢在脑子", "w": {"linzhixia": 2, "liqian": 2, "wuzhen": 2}, "a": [1, 2, 1]}, {"text": "一部带感的宅斗复仇剧：危险、迷人，看我如何执子翻盘", "w": {"jundai": 3, "weirao": 3}, "a": [1, 1, 2]}]}], "chapters": {"1": "试镜 · 第一印象", "2": "对手戏 · 亲密关系", "3": "高压戏 · 逆境", "4": "选角会 · 事业与野心", "5": "杀青之后 · 终极抉择"}};
+const CHARS = DATA.characters, QS = DATA.questions, CHS = DATA.chapters;
+const CN_NUM = ["零","一","二","三","四","五","六","七","八","九","十"];
+const ROMAN = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+const CHAPTER_EGG = {1:"🎬",2:"💌",3:"⚡",4:"🏆",5:"🌙"};
+const QEGGS = ["🦉","🍐","🐱","🍜","🔪","👑","📽️","🎟️","✨","🦷","📖","🚓","💋","🌹","🎞️","🍿"];
+const LETTERS = ["A","B","C","D"];
+
+const $ = s => document.querySelector(s);
+let cur = 0, answers = new Array(QS.length).fill(null);
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $("#"+id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---------- 开场尘埃 ---------- */
+(function makeDust(){
+  const box=$("#dusts");
+  for(let i=0;i<26;i++){
+    const d=document.createElement("i");
+    d.className="dust";
+    const s=Math.random()*3+1;
+    d.style.width=s+"px";d.style.height=s+"px";
+    d.style.left=(Math.random()*100)+"%";
+    d.style.animationDuration=(Math.random()*14+12)+"s";
+    d.style.animationDelay=(-Math.random()*20)+"s";
+    box.appendChild(d);
+  }
+})();
+
+/* ---------- 渲染题目 ---------- */
+function renderQ(){
+  const q=QS[cur], ch=q.ch;
+  $("#chEgg").textContent=CHAPTER_EGG[ch]||"🎬";
+  $("#chNo").textContent="第 "+CN_NUM[ch]+" 卷";
+  $("#chName").textContent=CHS[ch];
+  $("#sceneNo").textContent="第 "+ROMAN[cur+1]+" 场 / 共 "+ROMAN[QS.length]+" 场";
+  $("#fill").style.width=(cur/QS.length*100)+"%";
+  $("#qEgg").textContent=QEGGS[(cur)%QEGGS.length];
+  $("#sceneTxt").textContent=q.scene;
+  $("#qTxt").textContent=q.q;
+  const box=$("#opts"); box.innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="opt"+(answers[cur]===i?" picked":"");
+    b.innerHTML='<span class="mark">'+(answers[cur]===i?"✓":LETTERS[i])+'</span><span class="t"></span>';
+    b.querySelector(".t").textContent=o.text;
+    b.onclick=()=>{ answers[cur]=i; renderQ(); };
+    box.appendChild(b);
+  });
+  $("#prevBtn").style.visibility=cur===0?"hidden":"visible";
+  $("#nextBtn").textContent=cur===QS.length-1?"揭 晓 命 运":"下一场 ›";
+  $("#hint").textContent="";
+}
+
+$("#startBtn").onclick=()=>{ show("quiz"); renderQ(); };
+$("#prevBtn").onclick=()=>{ if(cur>0){cur--;renderQ();} };
+$("#nextBtn").onclick=()=>{
+  if(answers[cur]===null){ $("#hint").textContent="请先选定一个剧本走向，再继续放映"; return; }
+  if(cur<QS.length-1){ cur++; renderQ(); }
+  else { finish(); }
+};
+
+/* ---------- 计分 ---------- */
+function calc(){
+  const raw={}; CHARS.forEach(c=>raw[c.id]=0);
+  const axes=[0,0,0];
+  QS.forEach((q,i)=>{
+    const o=q.opts[answers[i]];
+    for(const k in o.w) raw[k]+=o.w[k];
+    o.a.forEach((v,j)=>axes[j]+=v);
+  });
+  const mx={}; CHARS.forEach(c=>mx[c.id]=0);
+  QS.forEach(q=>{
+    CHARS.forEach(c=>{
+      mx[c.id]+=Math.max(...q.opts.map(o=>o.w[c.id]||0));
+    });
+  });
+  const norm={};
+  CHARS.forEach(c=> norm[c.id]= mx[c.id]? raw[c.id]/mx[c.id] : 0);
+  const ranked=CHARS.map(c=>({c,p:norm[c.id]})).sort((a,b)=>b.p-a.p);
+  return {ranked, axes};
+}
+
+/* ---------- 结果页 ---------- */
+const AXIS_LABELS=[
+  ["甜 系","飒 系"],["感 性","理 性"],["他 人","自 我"]
+];
+function axisPct(v){ // 原始和粗略在 [-48,48]，映射到 0..100
+  const max=46;
+  return Math.round(50 + Math.max(-max,Math.min(max,v))/max*50);
+}
+function finish(){
+  show("loading");
+  setTimeout(()=>{
+    const {ranked,axes}=calc();
+    const top=ranked[0], second=ranked[1], third=ranked[2];
+    const pct=Math.max(54,Math.min(99,Math.round(top.p*97)));
+    const c=top.c;
+    const ap=axes.map(axisPct);
+
+    const cx=115,cy=115,R=82;
+    function pt(axisEnd,val){ // axisEnd 0..5, val 0..100
+      const ang=-Math.PI/2 + axisEnd*Math.PI/3;
+      const r=R*val/100;
+      return [cx+Math.cos(ang)*r, cy+Math.sin(ang)*r];
+    }
+    const radarVals=[ap[0], 100-ap[1], 100-ap[2], 100-ap[0], ap[1], ap[2]];
+    const poly=radarVals.map((v,i)=>pt(i,v).map(n=>n.toFixed(1)).join(",")).join(" ");
+    const verts=[0,1,2,3,4,5].map(i=>pt(i,100).map(n=>n.toFixed(1)).join(",")).join(" ");
+    const gridR=[.33,.66,1];
+    const grids=gridR.map(f=>[0,1,2,3,4,5].map(i=>{
+      const ang=-Math.PI/2+i*Math.PI/3;
+      return (cx+Math.cos(ang)*R*f).toFixed(1)+","+(cy+Math.sin(ang)*R*f).toFixed(1);
+    }).join(" "));
+    const radarLabels=["甜","理","我","飒","情","他"];
+    const labelPts=[0,1,2,3,4,5].map(i=>{const p=pt(i,118);return [p[0].toFixed(1),p[1].toFixed(1)]});
+
+    const posterFallback=(c)=>'<div class="fallback-name">'+c.name+'</div>';
+
+    let html='';
+    html+='<div class="result-top">'
+      +'<div class="poster">'
+      +'<img src="'+c.img+'" alt="'+c.name+'剧照" loading="eager" onerror="this.outerHTML=atob(\''+b64('<div class=&quot;poster-fallback&quot;>'+c.name+'<small>《'+c.drama+'》剧照加载失败<br>请检查网络后刷新</small></div>')+'\')">'
+      +'<div class="poster-badge">《'+c.drama+'》 · '+c.year+'</div></div>'
+      +'<div class="result-head">'
+      +'<div class="matchline">命 运 角 色 揭 晓</div>'
+      +'<div class="r-name">'+c.name+'</div>'
+      +'<div class="r-drama">出自《'+c.drama+'》（'+c.year+'）</div>'
+      +'<span class="r-tag">'+c.tag+'</span>'
+      +'<div class="pct-wrap"><div class="pct-num">'+pct+'<small>% 灵魂相似度</small></div>'
+      +'<div class="pct-bar"><i data-w="'+pct+'"></i></div></div>'
+      +'</div></div>';
+
+    html+='<div class="report">'
+      +'<div class="r-block"><h3>性格深析</h3><p>'+c.analysis+'</p></div>'
+      +'<div class="r-block"><h3>名场面 · 代表台词</h3>'
+      +'<div class="quote-box"><span class="qm">“</span>'+c.quote+'<span class="qm">”</span></div>'
+      +'<p style="text-align:center;color:var(--ink-dim);font-size:14px;margin-top:6px">— '+c.scene+'</p></div>'
+      +'<div class="r-block"><h3>感情观 · 事业观 · 相处之道</h3><div class="r-grid">'
+      +'<div class="r-mini"><b>💞 感情观</b><p>'+c.love+'</p></div>'
+      +'<div class="r-mini"><b>🎯 事业观</b><p>'+c.career+'</p></div>'
+      +'<div class="r-mini"><b>🤝 相处之道</b><p>'+c.tips+'</p></div>'
+      +'</div></div>';
+
+    // 三轴
+    html+='<div class="r-block"><h3>人格光谱</h3><div class="axis-wrap">'
+      +'<svg id="radar" viewBox="0 0 230 230" aria-hidden="true">'
+      +'<polygon points="'+verts+'" fill="none" stroke="rgba(212,175,106,.25)"/>'
+      +grids.map(g=>'<polygon points="'+g+'" fill="none" stroke="rgba(212,175,106,.12)"/>').join("")
+      +[0,1,2,3,4,5].map(i=>{const p=pt(i,100);return '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="rgba(212,175,106,.15)"/>';}).join("")
+      +'<polygon points="'+poly+'" fill="rgba(200,71,47,.30)" stroke="#f0d79a" stroke-width="1.6"/>'
+      +radarVals.map((v,i)=>{const p=pt(i,v);return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="#f0d79a"/>';}).join("")
+      +labelPts.map((p,i)=>'<text x="'+p[0]+'" y="'+p[1]+'" text-anchor="middle" dominant-baseline="middle" fill="#d4af6a" font-size="13" font-family="serif">'+radarLabels[i]+'</text>').join("")
+      +'</svg>'
+      +'<div class="axis-list">';
+    AXIS_LABELS.forEach((lab,i)=>{
+      html+='<div class="axis-row"><div class="al-top"><span>'+lab[0]+'</span><span>'+lab[1]+'</span></div>'
+        +'<div class="axis-track"><span class="axis-center"></span><i data-l="'+ap[i]+'"></i></div></div>';
+    });
+    html+='</div></div></div>';
+
+    // 次相似
+    function otherCard(o){
+      return '<div class="other-card">'
+        +'<img src="'+o.c.img+'" alt="'+o.c.name+'" loading="lazy" onerror="this.outerHTML=atob(\''+b64('<div class=&quot;fallback-name&quot;>'+o.c.name+'</div>')+'\')">'
+        +'<div><div class="o-name">'+o.c.name+'</div><div class="o-drama">《'+o.c.drama+'》</div></div>'
+        +'<div class="o-pct">'+Math.max(40,Math.round(o.p*93))+'%</div></div>';
+    }
+    html+='<div class="r-block"><h3>你的另外两副面孔</h3><div class="others">'
+      +otherCard(second)+otherCard(third)+'</div></div>';
+
+    html+='</div>'; // /report
+
+    html+='<div class="result-actions">'
+      +'<button class="btn small" id="copyBtn">复 制 结 果 文 案</button>'
+      +'<button class="btn small ghost" id="printBtn">打 印 / 存 PDF</button>'
+      +'<button class="btn small ghost" id="againBtn">重 新 测 试</button>'
+      +'</div>'
+      +'<p class="disclaimer">本测试为粉丝向娱乐内容，与田曦薇及其参演剧组官方无关，角色与台词为基于公开剧情的再创作<br>剧照版权归原权利人所有，仅供个人欣赏，请勿商用或重新发布图片</p>';
+
+    $("#result").innerHTML=html;
+    show("result");
+    requestAnimationFrame(()=>{
+      document.querySelectorAll(".pct-bar i").forEach(el=>el.style.width=el.dataset.w+"%");
+      document.querySelectorAll(".axis-track i").forEach(el=>el.style.left=el.dataset.l+"%");
+    });
+
+    $("#againBtn").onclick=()=>{ answers=new Array(QS.length).fill(null);cur=0;show("quiz");renderQ(); };
+    $("#printBtn").onclick=()=>window.print();
+    $("#copyBtn").onclick=()=>{
+      const txt="【猫头鹰… 不，胶卷命运测试】\n"
+        +"我刚测了《你最像田曦薇演过的角色里的谁》——\n"
+        +"我最像「"+c.name+"」（《"+c.drama+"》），灵魂相似度 "+pct+"%！\n"
+        +"另外还带着点「"+second.c.name+"」和「"+third.c.name+"」的影子。\n"
+        +"关键词："+c.tag+"\n"
+        +"“"+c.quote+"”\n"
+        +"——你也来测测，你是甜妹、飒姐还是带感恶女？";
+      copyText(txt);
+    };
+  }, 1500);
+}
+
+function b64(str){
+  // 兼容中文
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function copyText(t){
+  const done=()=>toast("结果文案已复制，去分享吧 ✦");
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done).catch(()=>fallback());
+  }else fallback();
+  function fallback(){
+    const ta=document.createElement("textarea");
+    ta.value=t;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");done();}catch(e){toast("复制失败，请手动长按选择");}
+    document.body.removeChild(ta);
+  }
+}
+let toastTimer;
+function toast(msg){
+  const t=$("#toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+}
+</script>
+</body>
+</html>
